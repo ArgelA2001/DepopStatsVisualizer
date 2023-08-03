@@ -1,0 +1,228 @@
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt
+import calendar
+
+
+df = pd.read_csv("D:\Selenium_python2\Depop Sales Official.csv")
+item_brand = df['Brand'].values
+
+time_of_sale = df['Date of sale']
+df['date'] = pd.to_datetime(df['Date of sale'])
+df['month'] = df['date'].dt.month
+df['year'] = df['date'].dt.year
+price = df['Item price']
+
+# print(df['month'].head(40), df['year'])
+
+# Group the data by month and year and calculate the total sales for each month and year
+monthly_sales = df.groupby(['year', 'month']).size()
+# print(monthly_sales)
+
+df['sales'] = df.groupby(['year', 'month'])['date'].transform('count')
+# print(df['sales'].head(20))
+time_of_sale = np.array(time_of_sale)
+
+item_cat = df['Category']
+item_size = df['Size']
+item_title = df['Description']
+price = df['Item price']
+shipping = df['Buyer shipping cost']
+
+
+# Create a bar plot for Quarter 1
+################################ TOTAL SALES BY MONTH
+#total sales based on month year and the total count of sales in each month year
+# monthly_sales = df.groupby(['year', 'month']).size().reset_index(name='sales_count')
+
+# # Combine 'year' and 'month' columns into a single column 'year_month'
+# monthly_sales['year_month'] = monthly_sales['year'].astype(str) + '-' + monthly_sales['month'].astype(str)
+# monthly_sales['year_month'] = monthly_sales['year_month'].apply(lambda x: f"{calendar.month_name[int(x.split('-')[1])]} {x.split('-')[0]}")
+
+# plt.figure(figsize=(12, 6))
+# plt.plot(monthly_sales['year_month'], monthly_sales['sales_count'], marker='o')
+# plt.xlabel('Year and Month')
+# plt.ylabel('Total Sales Count')
+# plt.title('Total Sales Count for Each Month')
+# plt.xticks(rotation=90)
+# plt.grid(True)
+# plt.gca().spines['right'].set_visible(False)
+# plt.gca().spines['top'].set_visible(False)
+# plt.xlim(left=-0.5)
+# plt.show()
+################################################################ TOTAL SALES BY CATEGORY
+
+##/ Quarter 
+quarter_data = df[df['date'].dt.quarter == 1] #change the 1 to variable
+
+# Group the Quarter 1 data by 'Category' and calculate the total count of sales for each category
+category_sales = quarter_data.groupby('Category').size().reset_index(name='cat_count') #can even just change the df to either quarter or monthly
+#to remove the need fo rmore lines of code, and using a function to identify which one of those to use? but need to figure out how to get function
+# to display this data that im going to be reading.
+##/ Quarter
+
+# Group the data by 'category' and calculate the total count of sales for each category
+# category_sales = df.groupby('Category').size().reset_index(name='cat_count')
+# category_sales = category_sales.sort_values(by='cat_count', ascending=False)
+
+# plt.figure(figsize=(12, 6))
+# bars = plt.bar(category_sales['Category'], category_sales['cat_count'])
+# plt.xlabel('Category')
+# plt.ylabel('Total Sales Count')
+# plt.title('Total Sales Count for Each Category')
+# plt.xticks(rotation=90)
+# # plt.grid(True)
+# for bar in bars:
+#     plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(int(bar.get_height())), 
+#              ha='center', va='bottom', fontsize=10, fontweight='bold')
+# plt.gca().spines['right'].set_visible(False)
+# plt.gca().spines['top'].set_visible(False)
+
+# plt.subplots_adjust(bottom=0.2)
+# plt.xlim(left=-0.5)
+# plt.subplots_adjust(left=0.15)
+# plt.show()
+
+################################################################  TOTAL SALES BY BRAND
+# brand_sales = df.groupby('Brand').size().reset_index(name='brand_count')
+# brand_sales = brand_sales.sort_values(by='brand_count', ascending=False)
+
+# plt.figure(figsize=(12, 6))
+# bars = plt.bar(brand_sales['Brand'], brand_sales['brand_count'])
+# plt.xlabel('Brand')
+# plt.ylabel('Total Sales Count')
+# plt.title('Total Sales Count for Each Brand')
+# plt.xticks(rotation=90, fontsize=9)
+# # # plt.grid(True)
+# for bar in bars:
+#     plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(int(bar.get_height())), 
+#              ha='center', va='bottom', fontsize=6, fontweight='bold')
+# plt.gca().spines['right'].set_visible(False)
+# plt.gca().spines['top'].set_visible(False)
+
+# # Increase the bottom border
+# plt.subplots_adjust(bottom=0.2)
+# plt.subplots_adjust(left=0.15)
+# plt.xlim(left=-0.5, right=len(brand_sales['Brand'])-0.5)
+
+# # Adjust the layout to fit the contents
+# plt.tight_layout()
+# plt.show()
+
+################################################################ TOTAL SALES BY SIZE
+# size_sales = df.groupby('Size').size().reset_index(name='size_count')
+# size_sales = size_sales.sort_values(by='size_count', ascending=False)
+
+# plt.figure(figsize=(12, 6))
+# bars = plt.bar(size_sales['Size'], size_sales['size_count'])
+# plt.xlabel('Size')
+# plt.ylabel('Total Sales Count')
+# plt.title('Total Sales Count for Each Size')
+# plt.xticks(rotation=90, fontsize=9)
+# # # plt.grid(True)
+# for bar in bars:
+#     plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(int(bar.get_height())), 
+#              ha='center', va='bottom', fontsize=6, fontweight='bold')
+# plt.gca().spines['right'].set_visible(False)
+# plt.gca().spines['top'].set_visible(False)
+
+# # Increase the bottom border
+# plt.subplots_adjust(bottom=0.2)
+# plt.subplots_adjust(left=0.15)
+# plt.xlim(left=-0.5, right=len(size_sales['Size'])-0.5)
+
+# # Adjust the layout to fit the contents
+# plt.tight_layout()
+# plt.show()
+################################################################QUICKEST SALE TIMES BASED ON CATEGORY QUARTER?
+
+################################################################ QUICKEST SALE TIMES BASED ON BRAND QUARTER?
+
+
+price = df['Item price'].values
+price = [pr[1:] for pr in price]
+price = [int(float(pr)) for pr in price]
+price = np.array(price)
+
+shipping = df['Buyer shipping cost']
+shipping = [pr[1:] for pr in shipping]
+shipping = [int(float(price)) if price else 0 for price in shipping]
+shipping = np.array(shipping)
+
+item_price = price + shipping
+brand_x = item_brand
+# brand_y = item_price
+
+brand_x = [str(brand) if isinstance(brand, str) else 'NaN' for brand in item_brand]
+
+#removing specific index from data, still needs work
+index_to_remove = 0
+brand_x = np.delete(brand_x, index_to_remove)
+item_price = np.delete(item_price, index_to_remove)
+
+data = {'Brands': brand_x, 'Item prices': item_price}
+
+
+df = pd.DataFrame(data)
+result = df.groupby('Brands')['Item prices'].sum().reset_index()
+result = result.sort_values(by='Item prices', ascending=False)
+
+brand_x = result['Brands']
+brand_y = result['Item prices']
+
+fig, ax = plt.subplots()
+ax.tick_params(axis='x', labelrotation=90, labelsize=5)
+plt.figure(figsize=(10, 6))
+plt.bar(brand_x, brand_y)
+plt.title('$ By Brand')
+# plt.show()
+
+# print(df.groupby('Item price')['Brand'].plot(kind='hist'))
+# print(brand_x)
+# plt.plot(brand_x, brand_y)
+# plt.show()
+
+# #can make a cat sales, then choose to filter by how much time 
+
+# def total_sales():
+
+# def total_cat_sales():
+
+# def quarter_cat_sales():
+
+# def brand_sales():
+
+# def size_sales():
+
+# def quickest_sales_cat():
+
+
+# sold_by_brand = 
+# doller_by_brand = 
+
+# sold_by_cat = 
+# doller_by_cat = 
+
+# sold_by_gencat = 
+# doller_by_gencat = 
+
+# # sold_by_condition = 
+# # doller_by_condition = 
+
+# sold_by_size = 
+# doller_by_size =    
+# 
+
+#histogram for overall prices
+# print(result)
+# print(len(brand_x), len(brand_y))
+# data_series = pd.Series(item_brand)
+
+# string_counts = data_series.value_counts()
+# ax = string_counts.plot.bar()
+
+# plt.xlabel('Unique Strings')
+# plt.ylabel('Frequency')
+# plt.title('Histogram of Unique String Values')
+# ax.tick_params(axis='x', labelrotation=90, labelsize=7)
+# plt.show()
